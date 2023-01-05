@@ -1,0 +1,11 @@
+set(SOURCES
+	include/Hooks.h
+	include/Manager.h
+	include/PCH.h
+	include/SwapData.h
+	src/Hooks.cpp
+	src/Manager.cpp
+	src/PCH.cpp
+	src/SwapData.cpp
+	src/main.cpp
+)
