@@ -31,10 +31,10 @@ namespace FormSwap
 
 		void PrintConflicts() const;
 
-		SwapResult GetSwapData(const RE::TESObjectREFR* a_ref, const RE::TESForm* a_base);
+		SwapResult GetSwapData(const RE::TESObjectREFR* a_ref, const RE::TESForm* a_base, const RE::BGSMaterialSwap* a_materialSwap);
 
-		SwapResult GetSwapConditionalBase(const RE::TESObjectREFR* a_ref, const RE::TESForm* a_base);
-		TransformResult GetTransformConditional(const RE::TESObjectREFR* a_ref, const RE::TESForm* a_base);
+		SwapResult GetSwapConditionalBase(const RE::TESObjectREFR* a_ref, const RE::TESForm* a_base, const RE::BGSMaterialSwap* a_materialSwap);
+		TransformResult GetTransformConditional(const RE::TESObjectREFR* a_ref, const RE::TESForm* a_base, const RE::BGSMaterialSwap* a_materialSwap);
 
 	protected:
 		Manager() = default;

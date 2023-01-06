@@ -8,7 +8,12 @@ namespace BaseObjectSwapper
 		if (const auto base = a_ref->GetObjectReference(); base) {
 			FormSwap::Manager::GetSingleton()->LoadFormsOnce();
 
-			const auto& [swapBase, transformData] = FormSwap::Manager::GetSingleton()->GetSwapData(a_ref, base);
+            RE::BGSMaterialSwap* swapForm{ nullptr };
+			if (const auto materialSwap = base->As<RE::BGSModelMaterialSwap>()) {
+				swapForm = materialSwap->swapForm;
+			}
+
+		    const auto& [swapBase, transformData] = FormSwap::Manager::GetSingleton()->GetSwapData(a_ref, base, swapForm);
 			if (swapBase && swapBase != base) {
 				a_ref->SetObjectReference(swapBase);
 			}

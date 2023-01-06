@@ -245,9 +245,14 @@ namespace FormSwap
 		return false;
 	}
 
-	SwapResult Manager::GetSwapConditionalBase(const RE::TESObjectREFR* a_ref, const RE::TESForm* a_base)
+	SwapResult Manager::GetSwapConditionalBase(const RE::TESObjectREFR* a_ref, const RE::TESForm* a_base, const RE::BGSMaterialSwap* a_materialSwap)
 	{
-		if (const auto it = swapFormsConditional.find(a_base->GetFormID()); it != swapFormsConditional.end()) {
+		auto it = swapFormsConditional.find(a_base->GetFormID());
+		if (it == swapFormsConditional.end() && a_materialSwap) {
+			it = swapFormsConditional.find(a_materialSwap->GetFormID());
+		}
+
+	    if (it != swapFormsConditional.end()) {
 			auto cell = a_ref->GetParentCell();
 			if (!cell) {
 				cell = a_ref->GetSaveParentCell();
@@ -271,9 +276,14 @@ namespace FormSwap
 		return { nullptr, std::nullopt };
 	}
 
-	TransformResult Manager::GetTransformConditional(const RE::TESObjectREFR* a_ref, const RE::TESForm* a_base)
+	TransformResult Manager::GetTransformConditional(const RE::TESObjectREFR* a_ref, const RE::TESForm* a_base, const RE::BGSMaterialSwap* a_materialSwap)
 	{
-		if (const auto it = transformsConditional.find(a_base->GetFormID()); it != transformsConditional.end()) {
+		auto it = transformsConditional.find(a_base->GetFormID());
+		if (it == transformsConditional.end() && a_materialSwap) {
+			it = transformsConditional.find(a_materialSwap->GetFormID());
+		}
+
+	    if (it != transformsConditional.end()) {
 			auto cell = a_ref->GetParentCell();
 			if (!cell) {
 				cell = a_ref->GetSaveParentCell();
@@ -297,21 +307,33 @@ namespace FormSwap
 		return std::nullopt;
 	}
 
-	SwapResult Manager::GetSwapData(const RE::TESObjectREFR* a_ref, const RE::TESForm* a_base)
+	SwapResult Manager::GetSwapData(const RE::TESObjectREFR* a_ref, const RE::TESForm* a_base, const RE::BGSMaterialSwap* a_materialSwap)
 	{
-		const auto get_swap_base = [a_ref](const RE::TESForm* a_form, const SwapMap<SwapDataVec>& a_map) -> SwapResult {
-			if (const auto it = a_map.find(a_form->GetFormID()); it != a_map.end()) {
+		const auto get_swap_base = [&](const RE::TESForm* a_form, const SwapMap<SwapDataVec>& a_map) -> SwapResult
+		{
+			auto it = a_map.find(a_form->GetFormID());
+			if (it == a_map.end() && a_materialSwap) {
+				it = a_map.find(a_materialSwap->GetFormID());
+			}
+
+		    if (it != a_map.end()) {
 				for (auto& swapData : it->second | std::ranges::views::reverse) {
 					if (auto swapObject = swapData.GetSwapBase(a_ref)) {
 						return { swapObject, swapData.transform };
 					}
 				}
 			}
+
 			return { nullptr, std::nullopt };
 		};
 
 		const auto get_transform = [&](const RE::TESForm* a_form) -> TransformResult {
-			if (const auto it = transforms.find(a_form->GetFormID()); it != transforms.end()) {
+			auto it = transforms.find(a_form->GetFormID());
+			if (it == transforms.end() && a_materialSwap) {
+				it = transforms.find(a_materialSwap->GetFormID());
+			}
+
+			if (it != transforms.end()) {
 				for (auto& transformData : it->second | std::ranges::views::reverse) {
 					if (transformData.IsTransformValid(a_ref)) {
 						return transformData.transform;
@@ -333,7 +355,7 @@ namespace FormSwap
 		}
 
 		if (!swapData.first) {
-			swapData = GetSwapConditionalBase(a_ref, a_base);
+			swapData = GetSwapConditionalBase(a_ref, a_base, a_materialSwap);
 		}
 
 		if (!swapData.first) {
@@ -347,14 +369,14 @@ namespace FormSwap
 				swapData.first = static_cast<RE::TESBoundObject*>(calcedObjects.front().form);
 			}
 		}*/
-
+		
 		// get transforms
 		if (!has_transform(swapData.second) && !a_ref->IsCreated()) {
 			swapData.second = get_transform(a_ref);
 		}
 
 		if (!has_transform(swapData.second)) {
-			swapData.second = GetTransformConditional(a_ref, a_base);
+			swapData.second = GetTransformConditional(a_ref, a_base, a_materialSwap);
 		}
 
 		if (!has_transform(swapData.second)) {

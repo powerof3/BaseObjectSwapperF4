@@ -89,6 +89,7 @@ find_path(SRELL_INCLUDE_DIRS "srell.hpp")
 find_path(CLIBUTIL_INCLUDE_DIRS "CLibUtil/string.hpp")
 
 find_package(spdlog REQUIRED CONFIG)
+find_package(robin_hood CONFIG REQUIRED)
 
 # ---- Add source files ----
 
@@ -147,6 +148,7 @@ target_link_libraries(
 	PRIVATE
 		CommonLibF4::CommonLibF4
 		spdlog::spdlog
+		robin_hood::robin_hood
 )
 
 target_precompile_headers(
