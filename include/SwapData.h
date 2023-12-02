@@ -5,9 +5,9 @@ namespace FormSwap
 	using FormIDStr = std::variant<RE::FormID, std::string>;
 
 	template <class K, class D>
-	using Map = robin_hood::unordered_flat_map<K, D>;
+	using Map = ankerl::unordered_dense::map<K, D>;
 	template <class T>
-	using Set = robin_hood::unordered_flat_set<T>;
+	using Set = ankerl::unordered_dense::set<T>;
 
 	using FormIDSet = Set<RE::FormID>;
 	using FormIDOrSet = std::variant<RE::FormID, FormIDSet>;
@@ -21,8 +21,6 @@ namespace FormSwap
 	}
 
 	inline srell::regex genericRegex{ R"(\((.*?)\))" };
-
-	inline SeedRNG staticRNG;
 
 	class Transform
 	{

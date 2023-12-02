@@ -76,7 +76,7 @@ namespace FormSwap
 		float value = a_min;
 
 		if (!numeric::essentially_equal(a_min, a_max)) {
-			value = a_input.trueRandom ? staticRNG.Generate(a_min, a_max) :
+			value = a_input.trueRandom ? SeedRNG().Generate(a_min, a_max) :
 			                             SeedRNG(a_input.refSeed).Generate(a_min, a_max);
 		}
 
@@ -114,7 +114,7 @@ namespace FormSwap
 			return { iter, end };
 		};
 
-		if (clib_util::config::is_valid_entry(a_str)) {
+		if (clib_util::distribution::is_valid_entry(a_str)) {
 			const auto transformStrs = get_split_transform();
 			for (auto& transformStr : transformStrs) {
 				if (transformStr.contains("pos")) {
@@ -182,7 +182,7 @@ namespace FormSwap
 
 	Traits::Traits(const std::string& a_str)
 	{
-		if (clib_util::config::is_valid_entry(a_str)) {
+		if (clib_util::distribution::is_valid_entry(a_str)) {
 			if (a_str.contains("chance")) {
 				if (a_str.contains("R")) {
 					trueRandom = true;
@@ -217,6 +217,11 @@ namespace FormSwap
 			const auto& modName = splitID[1];
 			return RE::TESDataHandler::GetSingleton()->LookupFormID(formID, modName);
 		}
+		if (string::is_only_hex(a_str, true)) {
+			if (const auto form = RE::TESForm::GetFormByID(string::to_num<std::uint32_t>(a_str, true))) {
+				return form->GetFormID();
+			}
+		}
 		if (const auto form = RE::TESForm::GetFormByEditorID(a_str)) {
 			return form->GetFormID();
 		}
@@ -236,7 +241,7 @@ namespace FormSwap
 			TransformData transformData(input);
 			a_func(baseFormID, transformData);
 		} else {
-			logger::error("			failed to process {} (BASE formID not found)", a_str);
+			logger::error("\t\t\tfailed to process {} (BASE formID not found)", a_str);
 		}
 	}
 
@@ -245,7 +250,7 @@ namespace FormSwap
 		auto seededRNG = SeedRNG(a_ref->GetFormID());
 
 		if (traits.chance != 100) {
-			const auto rng = traits.trueRandom ? staticRNG.Generate<std::uint32_t>(0, 100) :
+			const auto rng = traits.trueRandom ? SeedRNG().Generate<std::uint32_t>(0, 100) :
 			                                     seededRNG.Generate<std::uint32_t>(0, 100);
 			if (rng > traits.chance) {
 				return false;
@@ -265,7 +270,7 @@ namespace FormSwap
 				if (auto formID = GetFormID(IDStr); formID != 0) {
 					set.emplace(formID);
 				} else {
-					logger::error("			failed to process {} (SWAP formID not found)", IDStr);
+					logger::error("\t\t\tfailed to process {} (SWAP formID not found)", IDStr);
 				}
 			}
 			return set;
@@ -279,7 +284,7 @@ namespace FormSwap
 		auto seededRNG = SeedRNG(a_ref->GetFormID());
 
 		if (traits.chance != 100) {
-			const auto rng = traits.trueRandom ? staticRNG.Generate<std::uint32_t>(0, 100) :
+			const auto rng = traits.trueRandom ? SeedRNG().Generate<std::uint32_t>(0, 100) :
 			                                     seededRNG.Generate<std::uint32_t>(0, 100);
 			if (rng > traits.chance) {
 				return nullptr;
@@ -292,7 +297,7 @@ namespace FormSwap
 			auto& set = std::get<FormIDSet>(formIDSet);
 
 			const auto setEnd = std::distance(set.begin(), set.end()) - 1;
-			const auto randIt = traits.trueRandom ? staticRNG.Generate<std::int64_t>(0, setEnd) :
+			const auto randIt = traits.trueRandom ? SeedRNG().Generate<std::int64_t>(0, setEnd) :
 			                                        seededRNG.Generate<std::int64_t>(0, setEnd);
 
 			return RE::TESForm::GetFormByID<RE::TESBoundObject>(*std::next(set.begin(), randIt));
@@ -313,10 +318,10 @@ namespace FormSwap
 				SwapData swapData(swapFormID, input);
 				a_func(baseFormID, swapData);
 			} else {
-				logger::error("			failed to process {} (SWAP formID not found)", a_str);
+				logger::error("\t\t\tfailed to process {} (SWAP formID not found)", a_str);
 			}
 		} else {
-			logger::error("			failed to process {} (BASE formID not found)", a_str);
+			logger::error("\t\t\tfailed to process {} (BASE formID not found)", a_str);
 		}
 	}
 }

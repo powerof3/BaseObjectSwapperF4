@@ -8,12 +8,12 @@ namespace BaseObjectSwapper
 		if (const auto base = a_ref->GetObjectReference(); base) {
 			FormSwap::Manager::GetSingleton()->LoadFormsOnce();
 
-            RE::BGSMaterialSwap* swapForm{ nullptr };
+			const RE::BGSMaterialSwap* swapForm{ nullptr };
 			if (const auto materialSwap = base->As<RE::BGSModelMaterialSwap>()) {
 				swapForm = materialSwap->swapForm;
 			}
 
-		    const auto& [swapBase, transformData] = FormSwap::Manager::GetSingleton()->GetSwapData(a_ref, base, swapForm);
+			const auto& [swapBase, transformData] = FormSwap::Manager::GetSingleton()->GetSwapData(a_ref, base, swapForm);
 			if (swapBase && swapBase != base) {
 				a_ref->SetObjectReference(swapBase);
 			}
@@ -30,5 +30,6 @@ namespace BaseObjectSwapper
 		InitItemImpl<RE::TESObjectREFR>::Install();
 		InitItemImpl<RE::Hazard>::Install();
 		InitItemImpl<RE::ArrowProjectile>::Install();
+		InitItemImpl<RE::GrenadeProjectile>::Install();
 	}
 }

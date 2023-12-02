@@ -1,6 +1,6 @@
 {
   "name": "bos-f4",
-  "version-string": "1.0.0",
+  "version-string": "1.1.0",
   "description": "",
   "homepage": "",
   "license": "MIT",
@@ -8,9 +8,8 @@
     "boost-stl-interfaces",
     "clib-util",
     "fmt",
-    "robin-hood-hashing",
+    "unordered-dense",
     "rsm-mmio",
-    "simpleini",
     "spdlog",
     "srell",
     "xbyak"

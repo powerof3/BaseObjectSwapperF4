@@ -33,7 +33,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE 
 
 project(
 	po3_BaseObjectSwapperF4
-	VERSION 1.0.0
+	VERSION 1.1.0
 	LANGUAGES CXX
 )
 
@@ -84,12 +84,11 @@ else ()
 	)
 endif ()
 
-find_path(SIMPLEINI_INCLUDE_DIRS "ConvertUTF.c")
 find_path(SRELL_INCLUDE_DIRS "srell.hpp")
 find_path(CLIBUTIL_INCLUDE_DIRS "CLibUtil/string.hpp")
 
 find_package(spdlog REQUIRED CONFIG)
-find_package(robin_hood CONFIG REQUIRED)
+find_package(unordered_dense CONFIG REQUIRED)
 
 # ---- Add source files ----
 
@@ -138,7 +137,6 @@ target_include_directories(
 	PRIVATE
 		${CMAKE_CURRENT_BINARY_DIR}/include
 		${CMAKE_CURRENT_SOURCE_DIR}/include
-		${SIMPLEINI_INCLUDE_DIRS}
 		${SRELL_INCLUDE_DIRS}
 		${CLIBUTIL_INCLUDE_DIRS}
 )
@@ -148,7 +146,7 @@ target_link_libraries(
 	PRIVATE
 		CommonLibF4::CommonLibF4
 		spdlog::spdlog
-		robin_hood::robin_hood
+		unordered_dense::unordered_dense
 )
 
 target_precompile_headers(

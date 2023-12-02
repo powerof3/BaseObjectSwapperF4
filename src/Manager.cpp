@@ -50,7 +50,7 @@ namespace FormSwap
 	{
 		logger::info("{:*^30}", "INI");
 
-		std::vector<std::string> configs = clib_util::config::get_configs(R"(Data\)", "_SWAP"sv);
+		std::vector<std::string> configs = clib_util::distribution::get_configs(R"(Data\)", "_SWAP"sv);
 
 		if (configs.empty()) {
 			logger::warn("No .ini files with _SWAP suffix were found within the Data folder, aborting...");
@@ -210,7 +210,7 @@ namespace FormSwap
 					{
 						if (const auto region = form->As<RE::TESRegion>()) {
 							if (const auto regionList = currentCell ? currentCell->GetRegionList(false) : nullptr) {
-								return std::any_of((*regionList).begin(), (*regionList).end(), [&](const auto& regionInList) {
+								return std::any_of(regionList->begin(), regionList->end(), [&](const auto& regionInList) {
 									return regionInList && regionInList == region;
 								});
 							}

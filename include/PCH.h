@@ -16,14 +16,13 @@
 #	include <spdlog/sinks/msvc_sink.h>
 #endif
 
-#include <robin_hood.h>
-#include <SimpleIni.h>
-#include <robin_hood.h>
-#include <srell.hpp>
-#include <CLibUtil/config.hpp>
+#include <CLibUtil/distribution.hpp>
 #include <CLibUtil/numeric.hpp>
 #include <CLibUtil/rng.hpp>
+#include <CLibUtil/simpleINI.hpp>
 #include <CLibUtil/string.hpp>
+#include <ankerl/unordered_dense.h>
+#include <srell.hpp>
 #pragma warning(pop)
 
 #define DLLEXPORT __declspec(dllexport)
@@ -44,7 +43,7 @@ namespace stl
 	{
 		F4SE::AllocTrampoline(14);
 
-	    auto& trampoline = F4SE::GetTrampoline();
+		auto& trampoline = F4SE::GetTrampoline();
 		T::func = trampoline.write_call<5>(a_src, T::thunk);
 	}
 
@@ -64,8 +63,8 @@ namespace stl
 
 namespace RE
 {
-    using FormID = std::uint32_t;
-    using RefHandle = std::uint32_t;
+	using FormID = std::uint32_t;
+	using RefHandle = std::uint32_t;
 	using FormType = ENUM_FORM_ID;
 }
 

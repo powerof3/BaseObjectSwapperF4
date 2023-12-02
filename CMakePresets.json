@@ -1,76 +1,69 @@
 {
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
   "configurePresets": [
     {
-      "binaryDir": "${sourceDir}/build",
+      "name": "cmake-dev",
+      "hidden": true,
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "Release"
-        }
+        "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
+        "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /external:anglebrackets /external:W0 $penv{CXXFLAGS}"
       },
       "errors": {
         "deprecated": true
       },
-      "hidden": true,
-      "name": "cmake-dev",
       "warnings": {
         "deprecated": true,
         "dev": true
       }
     },
     {
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": {
-          "type": "STRING",
-          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-        },
-        "VCPKG_OVERLAY_PORTS": {
-          "type": "STRING",
-          "value": "${sourceDir}/cmake/ports/"
-        }
-      },
+      "name": "vcpkg",
       "hidden": true,
-      "name": "vcpkg"
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "VCPKG_OVERLAY_PORTS": "${sourceDir}/cmake/ports/"
+      }
     },
     {
-      "cacheVariables": {
-        "CMAKE_MSVC_RUNTIME_LIBRARY": {
-          "type": "STRING",
-          "value": "MultiThreaded$<$<CONFIG:Debug>:Debug>"
-        },
-        "VCPKG_TARGET_TRIPLET": {
-          "type": "STRING",
-          "value": "x64-windows-static"
-        }
-      },
+      "name": "windows",
       "hidden": true,
-      "name": "windows"
+      "cacheVariables": {
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded$<$<CONFIG:Debug>:Debug>",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static"
+      }
     },
     {
-      "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /external:anglebrackets /external:W0 $penv{CXXFLAGS}"
-      },
-      "generator": "Visual Studio 16 2019",
-      "inherits": [
-        "cmake-dev",
-        "vcpkg",
-        "windows"
-      ],
-      "name": "vs2019-windows-vcpkg"
-    },
-    {
-      "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /external:anglebrackets /external:W0 $penv{CXXFLAGS}"
-      },
+      "name": "vs2022",
+      "hidden": true,
       "generator": "Visual Studio 17 2022",
+      "toolset": "v143"
+    },
+    {
+      "name": "sf",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build"
+    },
+    {
+      "name": "vs2022-windows-vcpkg-sf",
       "inherits": [
         "cmake-dev",
         "vcpkg",
-        "windows"
-      ],
-      "name": "vs2022-windows-vcpkg",
-      "toolset": "v143"
+        "windows",
+        "vs2022",
+        "sf"
+      ]
     }
   ],
-  "version": 2
+  "buildPresets": [
+    {
+      "name": "vs2022-windows-vcpkg-sf",
+      "configurePreset": "vs2022-windows-vcpkg-sf",
+      "configuration": "Release"
+    }
+  ]
 }
