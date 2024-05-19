@@ -1,11 +1,19 @@
 set(SOURCES
+	include/ConditionalData.h
 	include/Hooks.h
 	include/Manager.h
+	include/ObjectProperties.h
 	include/PCH.h
+	include/RNG.h
 	include/SwapData.h
+	include/Util.h
+	src/ConditionalData.cpp
 	src/Hooks.cpp
 	src/Manager.cpp
+	src/ObjectProperties.cpp
 	src/PCH.cpp
+	src/RNG.cpp
 	src/SwapData.cpp
+	src/Util.cpp
 	src/main.cpp
 )

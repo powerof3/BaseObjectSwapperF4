@@ -44,25 +44,25 @@
       "toolset": "v143"
     },
     {
-      "name": "sf",
+      "name": "f4",
       "hidden": true,
       "binaryDir": "${sourceDir}/build"
     },
     {
-      "name": "vs2022-windows-vcpkg-sf",
+      "name": "vs2022-windows-vcpkg-f4",
       "inherits": [
         "cmake-dev",
         "vcpkg",
         "windows",
         "vs2022",
-        "sf"
+        "f4"
       ]
     }
   ],
   "buildPresets": [
     {
-      "name": "vs2022-windows-vcpkg-sf",
-      "configurePreset": "vs2022-windows-vcpkg-sf",
+      "name": "vs2022-windows-vcpkg-f4",
+      "configurePreset": "vs2022-windows-vcpkg-f4",
       "configuration": "Release"
     }
   ]

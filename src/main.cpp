@@ -37,26 +37,27 @@ void InitializeLog()
 	logger::info(FMT_STRING("{} v{}"), Version::PROJECT, Version::NAME);
 }
 
-extern "C" DLLEXPORT bool F4SEAPI F4SEPlugin_Query(const F4SE::QueryInterface* a_F4SE, F4SE::PluginInfo* a_info)
-{
-	a_info->infoVersion = F4SE::PluginInfo::kVersion;
-	a_info->name = Version::PROJECT.data();
-	a_info->version = Version::MAJOR;
+extern "C" DLLEXPORT constinit auto F4SEPlugin_Version = []() noexcept {
+	F4SE::PluginVersionData data{};
 
-	const auto ver = a_F4SE->RuntimeVersion();
-	if (ver < F4SE::RUNTIME_LATEST) {
-		logger::critical(FMT_STRING("Unsupported runtime version {}"), ver.string());
-		return false;
-	}
+	data.PluginVersion({ Version::MAJOR, Version::MINOR, Version::PATCH });
+	data.PluginName(Version::PROJECT.data());
+	data.AuthorName("powerofthree");
+	data.UsesAddressLibrary(true);
+	data.UsesSigScanning(false);
+	data.IsLayoutDependent(true);
+	data.HasNoStructUse(false);
+	data.CompatibleVersions({ F4SE::RUNTIME_LATEST });
 
-	return true;
-}
+	return data;
+}();
+
 
 extern "C" DLLEXPORT bool F4SEAPI F4SEPlugin_Load(const F4SE::LoadInterface* a_f4se)
 {
-	InitializeLog();
-
 	F4SE::Init(a_f4se);
+
+	InitializeLog();
 
 	const auto messaging = F4SE::GetMessagingInterface();
 	messaging->RegisterListener(MessageHandler);
