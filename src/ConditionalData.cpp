@@ -14,7 +14,7 @@ ConditionFilters::ConditionFilters(std::vector<std::string>& a_conditions)
 		if (const auto processedID = util::GetFormID(condition); processedID != 0) {
 			negate ? NOT.emplace_back(processedID) : MATCH.emplace_back(processedID);
 		} else {
-			logger::error("\t\tFilter  [{}] INFO - unable to find form, treating filter as keyword", condition);
+			logger::error("\t\tFilter [{}] INFO - unable to find form, treating filter as FF keyword or cell editorID", condition);
 			negate ? NOT.emplace_back(condition) : MATCH.emplace_back(condition);
 		}
 	}
@@ -57,6 +57,10 @@ bool ConditionalInput::IsValid(RE::FormID a_formID) const
 
 bool ConditionalInput::IsValid(const std::string& a_edid) const
 {
+	if (currentCell && string::iequals(currentCell->GetFormEditorID(), a_edid)) {
+		return true;
+	}
+	
 	if (currentLocation && currentLocation->HasKeywordString(a_edid)) {
 		return true;
 	}

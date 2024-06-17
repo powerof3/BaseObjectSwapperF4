@@ -20,9 +20,11 @@ namespace util
 			return RE::TESDataHandler::GetSingleton()->LookupFormID(formID, modName);
 		}
 		if (string::is_only_hex(a_str, true)) {
-			if (const auto form = RE::TESForm::GetFormByID(string::to_num<RE::FormID>(a_str, true))) {
-				return form->GetFormID();
+			const auto formID = string::to_num<RE::FormID>(a_str, true);
+			if (const auto form = RE::TESForm::GetFormByID(formID); !form) {
+				logger::error("\t\tFilter [{}] INFO - unable to find form, treating filter as cell formID", a_str);
 			}
+			return formID;
 		}
 		if (const auto form = RE::TESForm::GetFormByEditorID(a_str)) {
 			return form->GetFormID();
